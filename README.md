@@ -18,5 +18,8 @@ The default folder name injected to gameinfo.gi is "dota_tempcontent", you can c
 - add other visual mod patch
 - idk give me suggestions
 
+### Why the .exe file size is large?
+Because i need to include library like vpk, json, shutil, tkinter, customtkinter, zlib, and crc-manipulator. To give you a pleasant and ease of use experience with this tool
+
 ### Virustotal
 https://www.virustotal.com/gui/file-analysis/N2RkNDRjZGEwYjNmY2Y4MzEwMWVkNGI2YWE2MmMxOTM6MTY3NzM4NjIyNg==
