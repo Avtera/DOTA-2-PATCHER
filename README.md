@@ -17,3 +17,6 @@ The default folder name injected to gameinfo.gi is "dota_tempcontent", you can c
 - make a prompt to rename the folder
 - add other visual mod patch
 - idk give me suggestions
+
+### Virustotal
+https://www.virustotal.com/gui/file-analysis/N2RkNDRjZGEwYjNmY2Y4MzEwMWVkNGI2YWE2MmMxOTM6MTY3NzM4NjIyNg==
