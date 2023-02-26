@@ -12,8 +12,8 @@ The default folder name injected to gameinfo.gi is "dota_tempcontent", you can c
 
 ### I dont left you guessing how
 - 1: Select your pak01_dir.vpk from "\Steam\steamapps\common\dota 2 beta\game\dota" or your modded pak01_dir.vpk
-- 2: (Change the mod folder name to any mod u using, then) Select your gameinfo.gi from "\Steam\steamapps\common\dota 2 beta\game\dota" copy the new gameinfo.gi from "patched" folder to the same folder where you get it
-- 3: Select the pak01_dir folder and copy the pak01_dir.vpk from "patched" folder to the mod folder (default: dota_tempcontent) thats located in "\Steam\steamapps\common\dota 2 beta\game"
+- 2: (Change the mod folder name to any mod u using, then) Select your gameinfo.gi from "\Steam\steamapps\common\dota 2 beta\game\dota", Copy the new gameinfo.gi from "patched" folder to the same folder where you get it
+- 3: Select the pak01_dir folder and copy the pak01_dir.vpk from "patched" folder to the mod folder (default: dota_tempcontent) located in "\Steam\steamapps\common\dota 2 beta\game"
 
 ### Screenshot
 ![image](https://user-images.githubusercontent.com/69560119/221392381-ddff5080-9436-4db9-93a0-43600e6300e4.png)
