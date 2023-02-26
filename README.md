@@ -9,7 +9,8 @@ An utility for visual mod.
 
 ### I dont left you guessing how
 - 1: Select your pak01_dir.vpk from "\Steam\steamapps\common\dota 2 beta\game\dota" or your modded pak01_dir.vpk
-- 2: (Change the mod folder name to any mod u using, then) Select your gameinfo.gi from "\Steam\steamapps\common\dota 2 beta\game\dota", Copy the new gameinfo.gi from "patched" folder to the same folder where you get it
+- 21: (Change the mod folder name to any mod u using, then) Select your gameinfo.gi from "\Steam\steamapps\common\dota 2 beta\game\dota"
+- 2b: (If you dont choose to patch original file) Copy the new gameinfo.gi from "patched" folder to the same folder where you get it
 - 3: Select the pak01_dir folder and copy the pak01_dir.vpk from "patched" folder to the mod folder (default: dota_tempcontent) located in "\Steam\steamapps\common\dota 2 beta\game"
 
 ### Some info
