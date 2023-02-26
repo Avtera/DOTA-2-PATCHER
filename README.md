@@ -7,13 +7,15 @@ An utility for visual mod.
 - Build patched pak01_dir folder to a .vpk file
 - Play cool music (you can turn it off)
 
-### Some info
-The default folder name injected to gameinfo.gi is "dota_tempcontent", you can change this folder name inside /data/database.json with any text editor to any folder name you wish 😎
-
 ### I dont left you guessing how
 - 1: Select your pak01_dir.vpk from "\Steam\steamapps\common\dota 2 beta\game\dota" or your modded pak01_dir.vpk
 - 2: (Change the mod folder name to any mod u using, then) Select your gameinfo.gi from "\Steam\steamapps\common\dota 2 beta\game\dota", Copy the new gameinfo.gi from "patched" folder to the same folder where you get it
 - 3: Select the pak01_dir folder and copy the pak01_dir.vpk from "patched" folder to the mod folder (default: dota_tempcontent) located in "\Steam\steamapps\common\dota 2 beta\game"
+
+### Some info
+- The default folder name injected to gameinfo.gi is "dota_tempcontent", you can change this folder name inside /data/database.json with any text editor to any folder name you wish 😎
+- Reminder for those want to rename the vpk to pak02_dir.vpk: If your installed mod pak01_dir.vpk is contains items_game.txt, the patch wards to default mod will not work because dota 2 cant accept 2 items_games.txt inside 2 different .vpk
+- Solution: Coming soon pak01_dir.vpk decomplier
 
 ### Screenshot
 ![image](https://user-images.githubusercontent.com/69560119/221392381-ddff5080-9436-4db9-93a0-43600e6300e4.png)
