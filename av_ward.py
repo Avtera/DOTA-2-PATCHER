@@ -141,7 +141,7 @@ def patchwards():
                 # Create the destination directory if it doesn't exist
                 os.makedirs(output_dir_vmdl, exist_ok=True) if not os.path.exists(output_dir_vmdl) else None
                 # Copy the file to the destination path
-                if not os.listdir(output_path_vmdl):
+                if not os.listdir(output_dir_vmdl):
                     shutil.copy2(vmdl_path, output_path_vmdl)
                     # num_copies += 1 # count wards model is copied
             # print(f"+ Total {num_copies} wards model is succesfully linked!")
