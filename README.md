@@ -1,7 +1,7 @@
 # DOTA-2-PATCHER
 An utility for visual mod.
 ![image](https://user-images.githubusercontent.com/69560119/221514692-29190c80-fac9-4592-9cd6-52fc5b0949e8.png)
-<sub>Picture: example of skinned ward replaced with default ward model</sub>
+<sub>Picture: example of skinned ward replaced with the default ward model</sub>
 
 ### What this tool do?
 - Patch all wards to the default wards model
