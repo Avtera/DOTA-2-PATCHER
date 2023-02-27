@@ -1,10 +1,10 @@
-from os import path as ospath
 from json import load as jsload
 from webbrowser import open_new_tab
 from time import sleep
 import customtkinter as ctk
 import tkinter as tk
 import sys
+import os
 
 # avoid circular import, detects if this launches as main
 if __name__ == "__main__":
@@ -16,19 +16,20 @@ if __name__ == "__main__":
 
 # load the language
 def load_language_file(lang):
-    with open(ospath.join(ospath.dirname(ospath.abspath(__file__)), "data", "lang", f"strings_{lang}.json"), "r") as f:
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "lang", f"strings_{lang}.json"), "r") as f:
         return jsload(f)
 
 # directory determiner
 def determine_dir():
     if getattr(sys, 'frozen', False):
-        this_dir = ospath.dirname(sys.executable)
+        this_dir = os.path.dirname(sys.executable)
     else:
-        this_dir = ospath.dirname(ospath.abspath(__file__))
+        this_dir = os.path.dirname(os.path.abspath(__file__))
     return this_dir
 
 # default variable
 this_dir = determine_dir()
+root_dir = os.path.dirname(os.path.abspath(__file__))
 
 # avoid unecessary import, detects if this launches as main
 if __name__ == "__main__":
@@ -42,7 +43,7 @@ class App(ctk.CTk):
         # main setup
         super().__init__()
         self.title(eng["title"])
-        self.iconbitmap(ospath.join(this_dir, "data", "library", "icon", "av_icon.ico"))
+        self.iconbitmap(os.path.join(root_dir, "data", "library", "icon", "av_icon.ico"))
         self.wm_attributes("-topmost", True)
         self.geometry(f"{w}x{h}")
         self.maxsize(w, h)
@@ -105,20 +106,21 @@ class Menu(ctk.CTkFrame):
         
     # tool 1
     def tool1(self):
-        result = av_ward.browsevpk()
+        result = av_ward.warder()
         self.update_entry(1)
+        self.update_entry(3)
         if result:
             self.button1.configure(text="Patched!")
         else:
-            self.button1.configure(text="Patch")
+            self.button1.configure(text="Failed!")
     # tool 2
     def tool2(self):
-        result = av_patcher.browsegi()
+        result = av_patcher.patcher()
         self.update_entry(2)
         if result:
             self.button2.configure(text="Patched!")
         else:
-            self.button2.configure(text="Patch")
+            self.button2.configure(text="Failed!")
     # tool 3
     def tool3(self):
         result = av_build.browsefldr()
@@ -126,11 +128,12 @@ class Menu(ctk.CTkFrame):
         if result:
             self.button3.configure(text="Builded!")
         else:
-            self.button3.configure(text="Build")
+            self.button3.configure(text="Failed!")
     def update_entry(self, integer):
         if integer == 1:
             path = av_dbm.dbread("pak01dir_path")
-            if path == None:
+            if path == None or not os.path.exists(path):
+                self.entry1.delete(0, tk.END)
                 self.entry1.insert("0", eng["tool1file"])
             else:
                 self.entry1.configure(state="normal")
@@ -141,9 +144,10 @@ class Menu(ctk.CTkFrame):
             self.entry1.configure(state="disabled")
         elif integer == 2:
             path = av_dbm.dbread("gameinfo_path")
-            if path is None:
+            if path == None or not os.path.exists(path):
+                self.entry2.delete(0, tk.END)
                 self.entry2.insert(0, eng["tool2file"])
-            if path is not None:
+            else:
                 self.entry2.configure(state="normal")
                 self.entry2.delete(0, tk.END)
                 self.entry2.insert(0, path)
@@ -152,9 +156,10 @@ class Menu(ctk.CTkFrame):
             self.entry2.configure(state="disabled")
         else:
             path = av_dbm.dbread("pakfolder_path")
-            if path is None:
+            if path == None or not os.path.exists(path):
+                self.entry3.delete(0, tk.END)
                 self.entry3.insert(0, eng["tool3file"])
-            if path is not None:
+            else:
                 self.entry3.configure(state="normal")
                 self.entry3.delete(0, tk.END)
                 self.entry3.insert(0, path)

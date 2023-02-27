@@ -48,6 +48,13 @@ def get_crc32(input_data):
     else:
         data = input_data.encode()
     return hex(crc32(data) & 0xffffffff)[2:]
+def patcher():
+    browse = browsegi()
+    if browse:
+        if ospath.exists(gameinfo_input):
+            patched = patchgi()
+            if patched:
+                return True
 def browsegi():
     global gameinfo_input
     global gameinfo_temp
@@ -68,7 +75,7 @@ def browsegi():
                 if result:
                     continue # select the file again
                 else:
-                    return # quit
+                    return False # quit
             # selected file is valid
             elif "gameinfo" in gameinfo_input or ".gi" in ospath.splitext(gameinfo_input)[1]:
                 continue
@@ -79,7 +86,7 @@ def browsegi():
                 if result:
                     continue # select the file again
                 else:
-                    return # quit
+                    return False # quit
         # goes here if the file is exists
         else:
             firsttime = False
@@ -89,20 +96,11 @@ def browsegi():
             result = messagebox.askyesno(eng["namegi"], message)
             if result:
                 av_dbm.dbwrite("gameinfo_path", gameinfo_input)
-                break # stop the loop then continue the process
+                return True # stop the loop then continue the process
             else:
                 del gameinfo_input
                 continue # select the file again
-    if ospath.exists(gameinfo_input):
-        result = patchgi()
-        if result:
-            return result
-        else:
-            return False
 def patchgi():
-    global gameinfo_input
-    global gameinfo_temp
-    global gameinfo_output
     global mod_folder
     if ospath.exists(gameinfo_input): 
         with open(gameinfo_input, "r") as f:
