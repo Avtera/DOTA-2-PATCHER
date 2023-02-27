@@ -30,4 +30,4 @@ An utility for visual mod.
 Because i need to include library like vpk, json, shutil, tkinter, customtkinter, zlib, and crc-manipulator. To give you a pleasant and ease of use experience with this tool.
 
 ### Virustotal
-https://www.virustotal.com/gui/file-analysis/N2RkNDRjZGEwYjNmY2Y4MzEwMWVkNGI2YWE2MmMxOTM6MTY3NzM4NjIyNg==
+Go to the releases page
