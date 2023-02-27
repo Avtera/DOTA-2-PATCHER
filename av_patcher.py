@@ -77,7 +77,7 @@ def browsegi():
                 else:
                     return False # quit
             # selected file is valid
-            elif "gameinfo" in gameinfo_input or ".gi" in ospath.splitext(gameinfo_input)[1]:
+            if "gameinfo" in gameinfo_input or ".gi" in ospath.splitext(gameinfo_input)[1]:
                 continue
             # detects wether any file is selected
             else:

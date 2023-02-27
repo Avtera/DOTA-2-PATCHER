@@ -19,10 +19,6 @@ output_dir = os.path.join(this_dir, "patched")
 output_vpk_dir = os.path.join(output_dir, "pak01_dir")
 
 folder_input = av_dbm.dbread("pakfolder_path")
-if folder_input == None:
-    folder_input = output_vpk_dir
-    if not os.path.exists(folder_input):
-        os.makedirs(folder_input)
 
 def browsefldr():
     global folder_input
@@ -44,7 +40,7 @@ def browsefldr():
                 else:
                     return # quit
             # selected file is valid
-            elif "pak" in folder_input or "_dir" in folder_input:
+            if "pak" in folder_input or "_dir" in folder_input:
                 continue # continue loop and go to else
             # detects wether any file is selected
             else:
@@ -86,10 +82,10 @@ def buildfolder():
             result = messagebox.askyesno(eng["namefldr"], message)
             if result:
                 try:
-                    shutil.copy2(os.path.join(output_dir, f"{folder_name}.vpk"), input_vpk_path)
+                    shutil.move(os.path.join(output_dir, f"{folder_name}.vpk"), input_vpk_path)
                     # status = os.path.exists(input_vpk_path)
                     # if status:
-                    message = "Copied! operation was successful."
+                    message = "File moved! operation was successful."
                     messagebox.showinfo(eng["namefldr"], message)
                 except Exception as e:
                     message = "Oops, unable to copy the file!"

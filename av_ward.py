@@ -64,7 +64,7 @@ def browsevpk(string):
                 else:
                     return False # quit
             # selected file is valid
-            elif ("pak" in vpk_input and "_dir" in vpk_input) or ".vpk" not in os.path.splitext(vpk_input)[1]:
+            if ".vpk" in os.path.splitext(vpk_input)[1]:
                 continue # continue loop and go to else
             # detects wether any file is selected
             else:
@@ -101,6 +101,7 @@ def extractvpk():
         if result:
             global vpk_extracted
             this_path = os.path.join(this_dir, "patched", vpk_name_o)
+            av_dbm.dbwrite("pakfolder_path", this_path)
             os.makedirs(this_path, exist_ok=True) if not os.path.exists(this_path) else None
             try:
                 for path in pak01_dir:
@@ -156,16 +157,14 @@ def patchwards():
             messagebox.showerror(eng["namewrd"], message)
             return False
         if num_replacements == 0:
-            message = 'Error: could not patch items_game.txt\n\nDetails: The items_game.txt inside selected pak01_dir.vpk is already patched!'
-            messagebox.showerror(eng["namewrd"], message)
-            return False
-        else: # Set the output directory and filename
-            vpk_name = os.path.basename(av_dbm.dbread("pak01dir_path"))
-            vpk_name_o = os.path.splitext(vpk_name)[0]
-            output_path = os.path.join(this_dir, "patched", f"{vpk_name_o}", "scripts", "items", "items_game.txt")
-            os.makedirs(os.path.dirname(output_path), exist_ok=True) if not os.path.exists(os.path.dirname(output_path)) else None
-            with open(output_path, "w", encoding="utf-8") as f:
-                f.write(new_file_contents)
+            message = 'Warning: could not patch items_game.txt\n\nDetails: The items_game.txt inside selected pak01_dir.vpk is already patched!'
+            messagebox.showwarning(eng["namewrd"], message)
+        vpk_name = os.path.basename(av_dbm.dbread("pak01dir_path"))
+        vpk_name_o = os.path.splitext(vpk_name)[0]
+        output_path = os.path.join(this_dir, "patched", f"{vpk_name_o}", "scripts", "items", "items_game.txt")
+        os.makedirs(os.path.dirname(output_path), exist_ok=True) if not os.path.exists(os.path.dirname(output_path)) else None
+        with open(output_path, "w", encoding="utf-8") as f:
+            f.write(new_file_contents)
         # duplicating vmdl from below here
         try:
             global vmdl_path
@@ -187,10 +186,12 @@ def patchwards():
             message = f"Error: could not duplicate the vmdl\n\nDetails: {str(e)}"
             messagebox.showerror(eng["namewrd"], message)
             return False
-        cod = f"Replaced {num_regex} lines of code"
+        cod = f"Replaced {num_regex} lines of text"
+        if num_regex == 0:
+            cod = "No line of text changed (possibly it's already patched)"
         vmd = f"Duplicated {num_copies} vmdl_c file"
         if num_copies == 0:
-            vmd = f"No vmdl_c file duplicated (possibly it's already patched)"
+            vmd = "No vmdl_c file duplicated (possibly it's already patched)"
         dir = os.path.join(this_dir, "patched", f"{vpk_name_o}")
         if vpk_extracted:
             ext = f"Extracted all contents from {vpk_name}"
