@@ -37,14 +37,13 @@ if __name__ == "__main__":
     w = 500
     h = 345
 
-
 class App(ctk.CTk):
     def __init__(self):
         # main setup
         super().__init__()
         self.title(eng["title"])
         self.iconbitmap(os.path.join(root_dir, "data", "library", "icon", "av_icon.ico"))
-        self.wm_attributes("-topmost", True)
+        # self.wm_attributes("-topmost", True)
         self.geometry(f"{w}x{h}")
         self.maxsize(w, h)
         self.minsize(w, h)
@@ -56,12 +55,45 @@ class App(ctk.CTk):
         self.menu.pack(padx=20, pady=(20, 20), fill="both")
         self.credit.pack(padx=30, pady=0, fill="both")
 
+        self.toplevel_window = None
+
+# class InputTextWindow(ctk.CTkToplevel):
+#     def __init__(self, parent):
+#         super().__init__(parent)
+#         self.title(eng["namegi"])
+#         self.iconbitmap(os.path.join(root_dir, "data", "library", "icon", "av_icon.ico"))
+#         self.geometry("400x150")
+#         self.maxsize(400, 150)
+#         self.minsize(400, 150)
+#         # define
+#         self.lbl = ctk.CTkLabel(self, text="Edit mod folder name", width=0, height=0)
+#         self.etry = ctk.CTkEntry(self, fg_color="transparent")
+#         self.btn = ctk.CTkButton(self, text="Confirm", command=self.savemodfolder)
+#         # props
+#         self.etry.insert("0", av_dbm.dbread("folder_name"))
+#         self.etry.focus()
+#         # place
+#         self.lbl.pack(padx=20, pady=20)
+#         self.etry.pack(padx=20, fill="both")
+#         self.btn.pack(padx=20, pady=20)
+
+#     def savemodfolder(self):
+#         av_dbm.dbwrite("folder_name", self.etry.get())
+#         self.withdraw()
 
 class Menu(ctk.CTkFrame):
     def __init__(self, parent):
         super().__init__(parent)
         self.entry = {}
         self.widgets()
+        
+    # def editmodfolder(self):
+    #     if App().toplevel_window is None or not App().toplevel_window.winfo_exists():
+    #         App().toplevel_window = InputTextWindow(App())  # create window if its None or destroyed
+    #     else:
+    #         App().toplevel_window.focus()  # if window exists focus it
+            
+        
     def widgets(self):
         # font
         bold = ctk.CTkFont(family="Segoe UI", size=13, weight="bold")
@@ -192,7 +224,6 @@ class Credit(ctk.CTkFrame):
         self.cr_link.bind("<Enter>", on_enter)
         self.cr_link.bind("<Leave>", on_leave)
         # play the music!
-        av_mid.play_music()
         self.checkbox = ctk.CTkCheckBox(self, text="Music", command=av_mid.toggle_music, border_width=2, width=0, height=0, checkbox_height=20, checkbox_width=20)
         self.checkbox.grid(padx=(0, 3), pady=(5, 0), row=0, rowspan=2, column=1)
         self.checkbox.select()
@@ -202,4 +233,7 @@ class Credit(ctk.CTkFrame):
 
 if __name__ == "__main__":
     app = App()
+    if Credit(app).checkbox.get() == 1:
+        av_mid.play_music()
+    app.protocol("WM_DELETE_WINDOW", sys.exit)
     app.mainloop()

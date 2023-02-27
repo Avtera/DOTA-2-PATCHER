@@ -23,8 +23,6 @@ vmdl_path = os.path.join(root_dir, "data", "library", "ward", "default_ward.vmdl
 txt_temp = os.path.join(root_dir, "data", "temp", "temp.txt")
 vpk_extracted = False
 vpk_input = None
-if av_dbm.dbread("pak01dir_path") != None:
-    vpk_input = os.path.join(av_dbm.dbread("pak01dir_path"))
 
 # regex pattern to search
 rx_search = r'"models/items/wards/[^"]*"' #inital search
@@ -46,6 +44,7 @@ def warder():
                 return True
 def browsevpk(string):
     global vpk_input
+    vpk_input = av_dbm.dbread("pak01dir_path")
     firsttime = True
     while True:
         # detects wether is pak01_dir.vpk or other .vpk file is exists

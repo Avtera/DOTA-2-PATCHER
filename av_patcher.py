@@ -1,28 +1,28 @@
 from re import search as research, finditer as refinditer
-from os import path as ospath, makedirs as osmakedirs
+import shutil
 from zlib import crc32
 from json import load as jsload
 from time import sleep
 from subprocess import Popen as spPopen, PIPE as spPIPE
 from tkinter import messagebox
 from tkinter import filedialog
+import os
 
 import av_dbm
 import av_main
 
 # some necessary default variable
 this_dir = av_main.determine_dir()
-root_dir = ospath.dirname(ospath.abspath(__file__))
-crcmanip_dir = ospath.join(root_dir, "data", "library", "crcmanip", "crcmanip-cli.exe")
-gameinfo_temp = ospath.join(root_dir, "data", "temp", "temp.gi")
-gameinfo_output = ospath.join(this_dir, "patched", "gameinfo.gi")
+root_dir = os.path.dirname(os.path.abspath(__file__))
+crcmanip_dir = os.path.join(root_dir, "data", "library", "crcmanip", "crcmanip-cli.exe")
+gameinfo_temp = os.path.join(root_dir, "data", "temp", "temp.gi")
+gameinfo_output = os.path.join(this_dir, "patched", "gameinfo.gi")
+gameinfo_input = None
 offset = 2
 
 # data and path value, so there is no existential crisis
-if not ospath.exists(ospath.dirname(gameinfo_temp)):
-    osmakedirs(ospath.dirname(gameinfo_temp))
-if av_dbm.dbread("gameinfo_path") != None:
-    gameinfo_input = ospath.join(av_dbm.dbread("gameinfo_path"))
+if not os.path.exists(os.path.dirname(gameinfo_temp)):
+    os.makedirs(os.path.dirname(gameinfo_temp))
 if av_dbm.dbread("folder_name") != None:
     mod_folder = av_dbm.dbread("folder_name")
 else:
@@ -31,18 +31,18 @@ else:
 
 # load the languages
 def load_language_file(lang):
-    with open(ospath.join(ospath.dirname(ospath.abspath(__file__)), "data", "lang", f"strings_{lang}.json"), "r") as f:
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "lang", f"strings_{lang}.json"), "r") as f:
         return jsload(f)
 eng = load_language_file("en")
 
 # core functions
 def get_file_info(file_path):
-    file_name = ospath.basename(file_path)
-    file_dir = ospath.dirname(file_path)
-    file_size_kb = round(ospath.getsize(file_path) / 1024, 3)
+    file_name = os.path.basename(file_path)
+    file_dir = os.path.dirname(file_path)
+    file_size_kb = round(os.path.getsize(file_path) / 1024, 3)
     return file_name, file_size_kb, file_dir
 def get_crc32(input_data):
-    if ospath.isfile(input_data):
+    if os.path.isfile(input_data):
         with open(input_data, 'rb') as f:
             data = f.read()
     else:
@@ -51,25 +51,24 @@ def get_crc32(input_data):
 def patcher():
     browse = browsegi()
     if browse:
-        if ospath.exists(gameinfo_input):
+        if os.path.exists(gameinfo_input):
             patched = patchgi()
             if patched:
                 return True
 def browsegi():
     global gameinfo_input
-    global gameinfo_temp
-    global gameinfo_output
+    gameinfo_input = av_dbm.dbread("gameinfo_path")
     firsttime = True
     while True:
         # detects wether is gameinfo.gi or other .gi file is exists
-        if 'gameinfo_input' not in globals() or not ospath.exists(gameinfo_input) or ".gi" not in ospath.splitext(gameinfo_input)[1]:
+        if gameinfo_input == None or not os.path.exists(gameinfo_input) or ".gi" not in os.path.splitext(gameinfo_input)[1]:
             if firsttime == True:
                 message = "The file gameinfo.gi is not detected. \nPlease locate the file."
                 result = messagebox.showinfo(eng["namegi"], message)
                 firsttime = False
             gameinfo_input = filedialog.askopenfilename(title="Select gameinfo.gi", filetypes=(("Game Info file", "*.gi"), ("All files", "*.*")))
             # selected file is invalid
-            if ospath.exists(gameinfo_input) and ".gi" not in ospath.splitext(gameinfo_input)[1]:
+            if os.path.exists(gameinfo_input) and ".gi" not in os.path.splitext(gameinfo_input)[1]:
                 message = "Invalid file is selected. Please try again."
                 result = messagebox.askretrycancel(eng["namegi"], message)
                 if result:
@@ -77,7 +76,7 @@ def browsegi():
                 else:
                     return False # quit
             # selected file is valid
-            if "gameinfo" in gameinfo_input or ".gi" in ospath.splitext(gameinfo_input)[1]:
+            if "gameinfo" in gameinfo_input or ".gi" in os.path.splitext(gameinfo_input)[1]:
                 continue
             # detects wether any file is selected
             else:
@@ -101,8 +100,8 @@ def browsegi():
                 del gameinfo_input
                 continue # select the file again
 def patchgi():
-    global mod_folder
-    if ospath.exists(gameinfo_input): 
+    global gameinfo_output
+    if os.path.exists(gameinfo_input): 
         with open(gameinfo_input, "r") as f:
             gi_data = f.read()
         originalfilelength = len(gi_data)
@@ -152,8 +151,7 @@ def patchgi():
                         title="Select the original gameinfo.gi",
                         filetypes=(("Gameinfo files", "*.gi"), ("All files", "*.*")))
                 else:
-                    if not ospath.exists(ospath.dirname(gameinfo_output)):
-                        osmakedirs(ospath.dirname(gameinfo_output))
+                    os.makedirs(os.path.dirname(gameinfo_output), exist_ok=True) if not os.path.exists(os.path.dirname(gameinfo_output)) else None
                 # CRC32 Manipulation
                 cmd = [crcmanip_dir, "patch", gameinfo_temp, gameinfo_output, str(gi_crc32), "-p", str(comment_offset), "-a", "CRC32"]
                 # Use subprocess to execute the command and capture the output
@@ -168,6 +166,22 @@ def patchgi():
                 if gi_crc32 == gi_manip_crc32:
                     message = f"Patcher report:\nOriginal CRC32: {gi_crc32}\nModified CRC32: {gi_manip_crc32}\n\nHex codes match! The patch operation was successful."
                     messagebox.showinfo(eng["namegi"], message)
+                    
+                    while True:
+                        message = f"Would you like to replace the original gameinfo.gi file with the newly patched one?"
+                        result = messagebox.askyesno(eng["namegi"], message)
+                        if result:
+                            try:
+                                input_dir = os.path.dirname(gameinfo_input)
+                                shutil.copy2(gameinfo_input, os.path.join(input_dir, "gameinfo.gi.bak"))
+                                shutil.move(gameinfo_output, gameinfo_input)
+                                message = "File moved! operation was successful."
+                                messagebox.showinfo(eng["namegi"], message)
+                            except Exception as e:
+                                message = "Oops, unable to copy the file!"
+                                messagebox.showerror(eng["namegi"], message)
+                        break
+                    
                     return True
                 else:
                     message = f"Patcher report:\nOriginal CRC32: {gi_crc32}\nModified CRC32: {gi_manip_crc32}\n\nThe hexadecimal codes do not match. The operation has failed."

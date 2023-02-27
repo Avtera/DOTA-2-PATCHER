@@ -17,11 +17,11 @@ eng = load_language_file("en") # eng["key"]
 this_dir = av_main.determine_dir()
 output_dir = os.path.join(this_dir, "patched")
 output_vpk_dir = os.path.join(output_dir, "pak01_dir")
-
-folder_input = av_dbm.dbread("pakfolder_path")
+folder_input = None
 
 def browsefldr():
     global folder_input
+    folder_input = av_dbm.dbread("pakfolder_path")
     firsttime = True
     while True:
         # detects wether is pak01_dir folder is exists
@@ -69,7 +69,6 @@ def browsefldr():
         else:
             return result
 def buildfolder():
-    global folder_input
     folder_name = os.path.basename(folder_input)
     newpak = vpk.new(folder_input)
     newpak.save(os.path.join(output_dir, f"{folder_name}.vpk"))
