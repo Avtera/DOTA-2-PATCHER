@@ -1,6 +1,6 @@
 # DOTA-2-PATCHER
 An utility for visual mod.
-![image](https://user-images.githubusercontent.com/69560119/221514522-5a8d5d37-3347-4831-b3d1-587766c2da13.png)
+![image](https://user-images.githubusercontent.com/69560119/221514692-29190c80-fac9-4592-9cd6-52fc5b0949e8.png)
 
 ### What this tool do?
 - Patch all wards to the default wards model
