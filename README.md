@@ -18,6 +18,7 @@ An utility for visual mod.
 - The default folder name injected to gameinfo.gi is "dota_tempcontent", you can change this folder name inside /data/database.json with any text editor to any folder name you wish 😎
 - Reminder for those want to rename the patched vpk to pak02_dir.vpk: If your installed mod pak01_dir.vpk is contains items_game.txt, the patch wards to default mod will not work because Dota 2 cant accept 2 items_games.txt inside 2 different .vpk
 - Solution: Replace the pak01_dir.vpk (the modded one, dont replace the original)
+- Can you use it with dota minify? yes, but you have to have a backup of the original gameinfo.gi (even my tool creates it before patching), then install minify, the tricky part is here: minify installation also edits the gameinfo.gi, but not patch it. my tool patches gameinfo.gi but only the original ones (general approach for other mods). so what you have to do is: replace the gameinfo.gi with your backed-up one, then proceed to use my patcher tool
 
 ### Screenshot
 ![image](https://user-images.githubusercontent.com/69560119/221392381-ddff5080-9436-4db9-93a0-43600e6300e4.png)
