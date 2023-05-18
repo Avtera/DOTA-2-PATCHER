@@ -1,0 +1,98 @@
+
+
+// Файл Patcher.cpp содержит реализацию класса Patcher, который отвечает за патчинг файлов gameinfo.gi и client.dll в игре Dota 2
+// Класс Patcher имеет четыре статических метода: patch_gameinfo(), patch_client(), revert_gameinfo() и revert_client()
+// Каждый метод принимает один параметр bool revert, который указывает, нужно ли применить или отменить патч
+// Каждый метод возвращает bool значение, которое указывает, успешно ли выполнен патчинг или нет
+// Класс Patcher использует библиотеку Windows API для работы с файлами и реестром, а также сторонние утилиты crcmanip-cli.exe и HxD.exe для изменения CRC32 и hex-редактирования
+// Класс Patcher также использует класс Globals для хранения глобальных констант и переменных, таких как пути к файлам и патчам
+
+#include "Patcher.h"
+#include "Globals.h"
+#include <Windows.h>
+#include <iostream>
+#include <fstream>
+
+// Метод для изменения файла gameinfo.gi
+bool Patcher::patch_gameinfo(bool revert) {
+    std::string gameinfo_path = Globals::dota_path + " dota\\gameinfo.gi";
+    BYTE Replace[] = { 0x47, 0x61, 0x6D, 0x65, 0x20, 0x64, 0x6F,
+        0x74,
+        0x61,
+        0x5F,
+        0x74,
+        0x65,
+        0x6D,
+        0x70,
+        0x63,
+         // Game dota_tempcontent
+         // Mod dota_tempcontent
+         // Game dota
+         // Mod dota
+         // Game core
+         // Mod core
+
+         // Здесь мы заменяем строки Game dota и Mod dota на Game dota_tempcontent и Mod dota_tempcontent соответственно
+
+    if (revert) {
+        Replace[10] = ' ';
+        Replace[11] = ' ';
+        Replace[12] = ' ';
+        Replace[13] = ' ';
+        Replace[14] = ' ';
+        Replace[15] = ' ';
+    } // Если мы хотим вернуть файл в исходное состояние
+
+    if (!apply_patch(gameinfo_path.c_str(), gameinfo_patch_offset1 + 5 , Replace + 5 , sizeof(Replace) - 5 )) return false;
+    if (!apply_patch(gameinfo_path.c_str(), gameinfo_patch_offset2 + 4 , Replace + 4 , sizeof(Replace) - 4 )) return false;
+
+    return true;
+}
+
+// Метод для изменения файла client.dll
+bool Patcher::patch_client(bool revert) {
+    std::string client_path = Globals::dota_path + " bin\\win64\\client.dll";
+    BYTE Replace[] = {
+        // Здесь мы заменяем байт по смещению engine_patch_offset +3 на EB (JMP), чтобы пропустить проверку CRC32 файла gameinfo.gi
+
+    if (revert) {
+        Replace[3] = engine_pattern[3];
+    } else {
+        Replace[3] = engine_replace_byte;
+    } // Если мы хотим вернуть файл в исходное состояние
+
+    return apply_patch(client_path.c_str(), engine_patch_offset +3 , &Replace [3], sizeof(Replace [3]));
+}
+
+// Метод для восстановления файла gameinfo.gi
+bool Patcher::revert_gameinfo() {
+    return patch_gameinfo(true); // Вызываем метод patch_gameinfo() с параметром true
+}
+
+// Метод для восстановления файла client.dll
+bool Patcher::revert_client() {
+    return patch_client(true); // Вызываем метод patch_client() с параметром true
+
+// Вспомогательный метод для применения патча к файлу по заданному пути, смещению и байтам
+bool Patcher::apply_patch(const char* file_path, size_t offset, BYTE* bytes_to_replace, size_t bytes_count) {
+    // Открываем файл для чтения и записи в двоичном режиме
+    std::fstream file(file_path, std::ios::in | std::ios::out | std::ios::binary);
+
+    // Проверяем, что файл успешно открыт
+    if (!file.is_open()) {
+        std::cout << "Не удалось открыть файл " << file_path << "\n";
+        return false;
+    }
+
+    // Перемещаемся к нужному смещению в файле
+    file.seekp(offset);
+
+    // Записываем байты для замены в файл
+    file.write((char*)bytes_to_replace, bytes_count);
+
+    // Закрываем файл
+    file.close();
+
+    return true;
+}
+
